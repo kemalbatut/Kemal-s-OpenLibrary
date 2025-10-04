@@ -1,7 +1,7 @@
-/* ---------- Base shell ---------- */
+/* Shell */
 html, body, #__next { height: 100%; }
 body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -9,88 +9,148 @@ body {
 .app-shell { min-height: 100%; display: flex; flex-direction: column; }
 .app-content { flex: 1 0 auto; }
 
-/* Light theme defaults (Bootstrap provides --bs-body-bg/colors) */
+/* Theme vars (Bootstrap variables feed these) */
 :root {
-  --app-surface: var(--bs-body-bg, #f8f9fa);
-  --app-text: var(--bs-body-color, #212529);
-  --app-card-bg: #f8f9fa;
-  --app-card-text: #212529;
+  --app-surface: var(--bs-body-bg, #f6f7fb);
+  --app-text: var(--bs-body-color, #20232a);
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --ring: #0d6efd;
 }
-
-/* Dark theme hook (Bootstrap v5.3) */
 :root[data-bs-theme='dark'] {
   color-scheme: dark;
-  --app-surface: #121212;
+  --app-surface: #0f1115;
   --app-text: #e6e6e6;
-  --app-card-bg: #1f1f1f;
-  --app-card-text: #f1f3f5;
+  --glass-bg: rgba(20, 22, 28, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --ring: #0dcaf0;
 }
 
 body {
-  background-color: var(--app-surface);
+  background:
+    radial-gradient(1000px 600px at -10% -10%, rgba(13, 110, 253, 0.08), transparent),
+    radial-gradient(900px 500px at 110% -10%, rgba(102, 16, 242, 0.08), transparent),
+    var(--app-surface);
   color: var(--app-text);
 }
 
-/* Navbar */
-.navbar-brand { font-weight: 700; letter-spacing: 0.3px; }
+/* Max width container for nicer reading width */
+.maxw { max-width: 1100px; }
 
-/* Page header */
-.card.bg-light {
-  background-color: var(--app-card-bg) !important;
-  color: var(--app-card-text) !important;
-  border-left: 5px solid #0d6efd;
-  border-radius: 10px;
+/* Glass cards */
+.card-glass, .pageheader-glass, .navbar-glass, .offcanvas-modern {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
 }
-.card.bg-light .card-body h3,
-.card.bg-light .card-title,
-.card.bg-light p { color: var(--app-card-text) !important; }
-:root[data-bs-theme='dark'] .card.bg-light { border-left-color: #0dcaf0; }
+.navbar-glass { border-radius: 0 !important; }
+
+/* Hero background + theme-aware text */
+.hero {
+  background: linear-gradient(135deg, #f6f9ff 0%, #eaf0ff 40%, #e9e6ff 100%);
+  border-radius: 16px;
+}
+:root[data-bs-theme='dark'] .hero {
+  background: linear-gradient(135deg, #0d1b2a, #172a46 40%, #261b3a 100%);
+}
+.hero-title,
+.hero-subtitle { margin: 0; }
+/* Light mode: dark text for readability */
+:root[data-bs-theme='light'] .hero-title { color: #111; }
+:root[data-bs-theme='light'] .hero-subtitle { color: #333; }
+/* Dark mode: light text */
+:root[data-bs-theme='dark'] .hero-title,
+:root[data-bs-theme='dark'] .hero-subtitle { color: #fff; }
+
+/* Modern nav link underline with animation (hover + active) */
+.nav-link-modern {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+.nav-link-modern::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+}
+.nav-link-modern:hover::after,
+.nav-link-modern.active::after {
+  transform: scaleX(1);
+}
+.nav-link-modern:not(.active):hover::after { transform-origin: left; }
+.nav-link-modern:not(.active)::after { transform-origin: right; }
 
 /* Tables */
-.table-hover tbody tr:hover {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.table-modern thead th {
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-bottom-width: 0 !important;
+  padding: 14px 16px;
 }
-:root[data-bs-theme='light'] .table-hover tbody tr:hover { background-color: #eaf3ff !important; }
+.table-modern tbody td { padding: 14px 16px; }
+.table-modern tbody tr.row-click { transition: background-color .15s ease, transform .03s ease; }
+.table-modern tbody tr.row-click:hover { background-color: rgba(13,110,253,.08); }
+:root[data-bs-theme='dark'] .table-modern tbody tr.row-click:hover { background-color: rgba(13,110,253,.15); }
 
-:root[data-bs-theme='dark'] .table {
-  --bs-table-color: #e6e6e6;
-  --bs-table-bg: #181a1b;
-  --bs-table-striped-bg: #202324;
-  --bs-table-striped-color: #e6e6e6;
-  --bs-table-hover-bg: #232628;
-  --bs-table-hover-color: #e6e6e6;
-  --bs-table-border-color: #2b2f31;
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: var(--bs-secondary-color);
+}
+.empty-state i { font-size: 2rem; display: block; }
+
+/* Inputs & focus ring */
+.form-control, .form-select, .input-group-text { border-radius: 10px; }
+.form-control:focus, .form-select:focus, .btn:focus, .btn:active {
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--ring) 25%, transparent);
+  outline: none;
 }
 
-/* Forms */
-.form-control,
-.input-group-text,
-.form-select {
-  background-color: var(--app-card-bg);
-  color: var(--app-card-text);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-.form-control::placeholder { color: #6c757d; }
-:root[data-bs-theme='dark'] .form-control,
-:root[data-bs-theme='dark'] .input-group-text,
-:root[data-bs-theme='dark'] .form-select {
-  background-color: #1f1f1f;
-  color: #e6e6e6;
-  border-color: #30363d;
-}
-:root[data-bs-theme='dark'] .form-control::placeholder { color: #9aa4af; }
+/* Buttons: slight lift on hover */
+.btn { border-radius: 12px; }
+.btn:hover { transform: translateY(-1px); }
 
 /* Images */
-img.img-fluid { border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+img.img-fluid { border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
 
 /* Footer */
-.app-footer { background: #0b0d10; color: #cfd6df; padding: 14px 0; margin-top: 32px; }
-:root[data-bs-theme='dark'] .app-footer { background: #0a0a0a; color: #b9c2cc; }
+.app-footer { background: rgba(0,0,0,.04); color: var(--bs-secondary-color); padding: 16px 0; margin-top: 32px; }
+:root[data-bs-theme='dark'] .app-footer { background: rgba(255,255,255,.04); }
 
-/* Hero block */
-.hero { background: linear-gradient(135deg, #0d6efd, #6610f2); }
-.hero.text-light p, .hero.text-light h1 { color: #fff; }
+/* Spacing helper */
+.spacer-16 { height: 16px; }
+/* === Hero buttons: theme-aware variants without changing JSX === */
+/* Light mode: make "btn-light" act like primary inside the hero */
+:root[data-bs-theme='light'] .hero .btn-light {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+:root[data-bs-theme='light'] .hero .btn-light:hover {
+  filter: brightness(0.95);
+}
 
-/* Small screens */
-@media (max-width: 576px) { body { padding-top: 64px; } }
+/* Light mode: make "btn-outline-light" act like outline-primary inside the hero */
+:root[data-bs-theme='light'] .hero .btn-outline-light {
+  color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  background-color: transparent !important;
+}
+:root[data-bs-theme='light'] .hero .btn-outline-light:hover {
+  background-color: color-mix(in srgb, var(--bs-primary) 10%, transparent) !important;
+}
+
+/* Dark mode: keep the original light / outline-light look, just ensure contrast */
+:root[data-bs-theme='dark'] .hero .btn-outline-light:hover {
+  background-color: rgba(255,255,255,.1) !important;
+}

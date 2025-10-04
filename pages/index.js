@@ -27,9 +27,9 @@ export default function Home() {
       />
 
       {/* HERO */}
-      <div className="hero bg-gradient-primary text-light rounded-4 p-4 p-md-5 mb-4 shadow-sm">
-        <h1 className="display-6 fw-bold mb-2">OpenLibrary Explorer</h1>
-        <p className="lead mb-4">
+      <div className="hero rounded-4 p-4 p-md-5 mb-4 shadow-sm">
+        <h1 className="hero-title display-6 fw-bold mb-2">OpenLibrary Explorer</h1>
+        <p className="hero-subtitle lead mb-4">
           Search books by URL, ID, or title; look up authors; and browse a curated list.
         </p>
         <div className="d-flex gap-2 flex-wrap">
