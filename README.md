@@ -6,9 +6,9 @@ A modern **Next.js** application for exploring the OpenLibrary API with **photo-
 <p align="center">
   <a href="https://kemals-openlibrary.vercel.app" target="_blank"><strong>Live Demo</strong></a> ·
   <a href="#key-features">Features</a> ·
+  <a href="#screenshots">Screenshots</a>
   <a href="#architecture">Architecture</a> ·
   <a href="#setup--local-development">Setup</a> ·
-  <a href="#screenshots">Screenshots</a>
 </p>
 
 <p align="center">
