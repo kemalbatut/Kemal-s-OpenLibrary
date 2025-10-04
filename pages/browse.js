@@ -215,13 +215,6 @@ export default function Browse() {
           Next →
         </Button>
       </div>
-
-      {/* Sticky back home */}
-      <div className="position-fixed bottom-0 start-50 translate-middle-x mb-3">
-        <Button variant="secondary" onClick={() => router.push('/')}>
-          ← Back Home
-        </Button>
-      </div>
     </>
   );
 }

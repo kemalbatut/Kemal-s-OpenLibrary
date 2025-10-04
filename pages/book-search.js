@@ -52,7 +52,7 @@ export default function BookSearch() {
           return router.push(`/works/${workId}`);
         }
       }
-      // Fallback: title search → first matching work
+      // title fallback
       const url = `https://openlibrary.org/search.json?title=${encodeURIComponent(input)}&fields=key,title&limit=1`;
       const res = await fetch(url);
       if (!res.ok) throw new Error('Search failed');
@@ -61,7 +61,7 @@ export default function BookSearch() {
       const workId = key?.includes('/works/') ? key.split('/').pop() : null;
       if (!workId) throw new Error('No matching work');
       router.push(`/works/${workId}`);
-    } catch (err) {
+    } catch {
       setError('Sorry, no matching book/work found.');
     } finally {
       setBusy(false);
@@ -71,13 +71,7 @@ export default function BookSearch() {
   return (
     <>
       <SeoHead title="Book Search" description="Find books by ID, URL, or title." />
-      <PageHeader
-        as="h1"
-        text="Book Search"
-        sub="Paste a work/edition URL/ID or type a title."
-        showBack
-        backHref="/"
-      />
+      <PageHeader as="h1" text="Book Search" sub="Paste a work/edition URL/ID or type a title." />
 
       <Card className="card-glass">
         <Card.Body>
@@ -97,12 +91,8 @@ export default function BookSearch() {
             </div>
 
             <div className="mt-3 d-flex gap-2">
-              <Button type="submit" disabled={busy}>
-                {busy ? 'Searching…' : 'Search'}
-              </Button>
-              <Button variant="outline-secondary" onClick={() => setInput('')} disabled={busy}>
-                Clear
-              </Button>
+              <Button type="submit" disabled={busy}>{busy ? 'Searching…' : 'Search'}</Button>
+              <Button variant="outline-secondary" onClick={() => setInput('')} disabled={busy}>Clear</Button>
             </div>
 
             {error && <div className="text-danger mt-3">{error}</div>}

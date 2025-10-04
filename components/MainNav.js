@@ -1,92 +1,57 @@
-import { useEffect, useState } from 'react';
+// components/MainNav.js
 import Link from 'next/link';
-import { Button, Container, Nav, Navbar, Offcanvas } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 
-const THEME_KEY = 'theme';
-
-function NavLink({ href, children }) {
+export default function MainNav({ theme = 'light', onToggleTheme = () => {} }) {
   const router = useRouter();
-  const active = router.pathname === href;
-  return (
-    <Nav.Link
-      as={Link}
-      href={href}
-      className={`nav-link-modern ${active ? 'active' : ''}`}
-    >
-      {children}
-    </Nav.Link>
-  );
-}
 
-export default function MainNav() {
-  const [theme, setTheme] = useState('light');
-  const [show, setShow] = useState(false);
+  // Show Back on specific routes (extend if you want)
+  const showBack = ['/book-search', '/author-search', '/browse'].includes(router.pathname);
 
-  useEffect(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem(THEME_KEY) : null;
-    const prefersDark = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-    const initial = saved === 'dark' || saved === 'light' ? saved : (prefersDark ? 'dark' : 'light');
-
-    setTheme(initial);
-    document.body.setAttribute('data-theme', initial);
-    document.documentElement.setAttribute('data-bs-theme', initial);
-  }, []);
-
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-bs-theme', theme);
-    try { localStorage.setItem(THEME_KEY, theme); } catch {}
-  }, [theme]);
-
-  const isDark = theme === 'dark';
-  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  const handleBack = () => {
+    // For search/browse, going Home is the clearest action
+    if (showBack) router.push('/');
+    else router.back();
+  };
 
   return (
-    <>
-      <Navbar
-        expand="lg"
-        className="fixed-top navbar-glass border-0"
-        bg={isDark ? 'dark' : 'light'}
-        variant={isDark ? 'dark' : 'light'}
-      >
-        <Container className="maxw">
-          <Navbar.Brand className="fw-bold">
-            <i className="bi bi-book-half me-2" aria-hidden /> Kemal&apos;s OpenLibrary
+    <Navbar expand="lg" sticky="top" className="navbar-glass">
+      <Container className="maxw">
+        <div className="d-flex align-items-center gap-2">
+          {showBack && (
+            <Button
+              size="sm"
+              variant="outline-secondary"
+              className="back-button-nav"
+              aria-label="Go back"
+              onClick={handleBack}
+              title="Go back"
+            >
+              ← Back
+            </Button>
+          )}
+          <Navbar.Brand as={Link} href="/" className="fw-semibold">
+            Kemal’s OpenLibrary
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="offcanvasNav" onClick={() => setShow(true)} />
-          <Navbar.Offcanvas
-            id="offcanvasNav"
-            placement="end"
-            show={show}
-            onHide={() => setShow(false)}
-            className="offcanvas-modern"
-          >
-            <Offcanvas.Header closeButton>
-              <Offcanvas.Title className="fw-semibold">Menu</Offcanvas.Title>
-            </Offcanvas.Header>
-            <Offcanvas.Body>
-              <Nav className="me-auto gap-1">
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/browse">Browse</NavLink>
-                <NavLink href="/book-search">Book Search</NavLink>
-                <NavLink href="/author-search">Author Search</NavLink>
-                <NavLink href="/about">About</NavLink>
-              </Nav>
-              <div className="d-flex align-items-center gap-2">
-                <Button
-                  size="sm"
-                  variant={isDark ? 'outline-light' : 'outline-dark'}
-                  onClick={toggleTheme}
-                >
-                  {isDark ? '☀️ Light' : '🌙 Dark'}
-                </Button>
-              </div>
-            </Offcanvas.Body>
-          </Navbar.Offcanvas>
-        </Container>
-      </Navbar>
-      <div style={{ height: 72 }} />
-    </>
+        </div>
+
+        <Navbar.Toggle aria-controls="main-nav" />
+        <Navbar.Collapse id="main-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} href="/book-search" className="nav-link-modern">Book Search</Nav.Link>
+            <Nav.Link as={Link} href="/author-search" className="nav-link-modern">Author Search</Nav.Link>
+            <Nav.Link as={Link} href="/browse" className="nav-link-modern">Browse</Nav.Link>
+            <Nav.Link as={Link} href="/about" className="nav-link-modern">About</Nav.Link>
+          </Nav>
+
+          <div className="d-flex">
+            <Button size="sm" variant="outline-secondary" onClick={onToggleTheme}>
+              {theme === 'dark' ? 'Light' : 'Dark'} mode
+            </Button>
+          </div>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }

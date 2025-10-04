@@ -39,11 +39,11 @@ export default function AuthorSearch() {
       const res = await fetch(url);
       if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
-      const key = data?.docs?.[0]?.key; // "/authors/OLxxxxA"
+      const key = data?.docs?.[0]?.key;
       const authorId = key?.split('/').pop();
       if (!authorId) throw new Error('No results');
       router.push(`/authors/${authorId}`);
-    } catch (err) {
+    } catch {
       setError('Sorry, no matching author found.');
     } finally {
       setBusy(false);
@@ -53,13 +53,7 @@ export default function AuthorSearch() {
   return (
     <>
       <SeoHead title="Author Search" description="Find authors by ID, URL, or name." />
-      <PageHeader
-        as="h1"
-        text="Author Search"
-        sub="Paste an author URL/ID or type a name."
-        showBack
-        backHref="/"
-      />
+      <PageHeader as="h1" text="Author Search" sub="Paste an author URL/ID or type a name." />
 
       <Card className="card-glass">
         <Card.Body>
@@ -79,12 +73,8 @@ export default function AuthorSearch() {
             </div>
 
             <div className="mt-3 d-flex gap-2">
-              <Button type="submit" disabled={busy}>
-                {busy ? 'Searching…' : 'Search'}
-              </Button>
-              <Button variant="outline-secondary" onClick={() => setInput('')} disabled={busy}>
-                Clear
-              </Button>
+              <Button type="submit" disabled={busy}>{busy ? 'Searching…' : 'Search'}</Button>
+              <Button variant="outline-secondary" onClick={() => setInput('')} disabled={busy}>Clear</Button>
             </div>
 
             {error && <div className="text-danger mt-3">{error}</div>}

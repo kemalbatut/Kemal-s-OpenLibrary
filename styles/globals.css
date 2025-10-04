@@ -222,3 +222,28 @@ body.scrolled .pageheader-glass.pageheader-animated {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0,0,0,.12);
 }
+/* Back button in navbar (theme-aware) */
+.back-button-nav {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  transition: transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+  background: transparent;
+  border: 1px solid;
+}
+
+:root[data-bs-theme='light'] .back-button-nav {
+  color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+:root[data-bs-theme='light'] .back-button-nav:hover {
+  background: color-mix(in srgb, var(--bs-primary) 12%, transparent);
+}
+
+:root[data-bs-theme='dark'] .back-button-nav {
+  color: #fff;
+  border-color: rgba(255,255,255,.55);
+}
+:root[data-bs-theme='dark'] .back-button-nav:hover {
+  background: rgba(255,255,255,.1);
+}
