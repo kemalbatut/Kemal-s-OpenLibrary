@@ -7,7 +7,9 @@ export default function Layout({ children }) {
   return (
     <div className="app-shell">
       <MainNav />
-      <Container className="mt-3 app-content">{children}</Container>
+      <Container className="app-content maxw">
+        {children}
+      </Container>
       <Footer />
     </div>
   );

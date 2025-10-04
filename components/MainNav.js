@@ -1,14 +1,28 @@
-// components/MainNav.js
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Button, Container, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Nav, Navbar, Offcanvas } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
-const THEME_KEY = 'theme'; // 'light' | 'dark'
+const THEME_KEY = 'theme';
+
+function NavLink({ href, children }) {
+  const router = useRouter();
+  const active = router.pathname === href;
+  return (
+    <Nav.Link
+      as={Link}
+      href={href}
+      className={`nav-link-modern ${active ? 'active' : ''}`}
+    >
+      {children}
+    </Nav.Link>
+  );
+}
 
 export default function MainNav() {
   const [theme, setTheme] = useState('light');
+  const [show, setShow] = useState(false);
 
-  // initialize theme (saved or system)
   useEffect(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem(THEME_KEY) : null;
     const prefersDark = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
@@ -16,43 +30,63 @@ export default function MainNav() {
 
     setTheme(initial);
     document.body.setAttribute('data-theme', initial);
-    document.documentElement.setAttribute('data-bs-theme', initial); // Bootstrap theming
+    document.documentElement.setAttribute('data-bs-theme', initial);
   }, []);
 
-  // keep attributes + storage in sync
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-bs-theme', theme);
     try { localStorage.setItem(THEME_KEY, theme); } catch {}
   }, [theme]);
 
-  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
   const isDark = theme === 'dark';
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   return (
     <>
-      <Navbar bg={isDark ? 'dark' : 'light'} variant={isDark ? 'dark' : 'light'} expand="md" className="fixed-top shadow-sm">
-        <Container>
-          <Navbar.Brand>{`Kemal's OpenLibrary`}</Navbar.Brand>
-          <Navbar.Toggle aria-controls="main-navbar" />
-          <Navbar.Collapse id="main-navbar">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} href="/">Home</Nav.Link>
-              <Nav.Link as={Link} href="/browse">Browse</Nav.Link>
-              <Nav.Link as={Link} href="/book-search">Book Search</Nav.Link>
-              <Nav.Link as={Link} href="/author-search">Author Search</Nav.Link>
-              <Nav.Link as={Link} href="/about">About</Nav.Link>
-            </Nav>
-            <div className="d-flex align-items-center gap-2">
-              <Button size="sm" variant={isDark ? 'outline-light' : 'outline-dark'} onClick={toggleTheme} aria-label="Toggle theme">
-                {isDark ? '☀️ Light' : '🌙 Dark'}
-              </Button>
-            </div>
-          </Navbar.Collapse>
+      <Navbar
+        expand="lg"
+        className="fixed-top navbar-glass border-0"
+        bg={isDark ? 'dark' : 'light'}
+        variant={isDark ? 'dark' : 'light'}
+      >
+        <Container className="maxw">
+          <Navbar.Brand className="fw-bold">
+            <i className="bi bi-book-half me-2" aria-hidden /> Kemal&apos;s OpenLibrary
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="offcanvasNav" onClick={() => setShow(true)} />
+          <Navbar.Offcanvas
+            id="offcanvasNav"
+            placement="end"
+            show={show}
+            onHide={() => setShow(false)}
+            className="offcanvas-modern"
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title className="fw-semibold">Menu</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="me-auto gap-1">
+                <NavLink href="/">Home</NavLink>
+                <NavLink href="/browse">Browse</NavLink>
+                <NavLink href="/book-search">Book Search</NavLink>
+                <NavLink href="/author-search">Author Search</NavLink>
+                <NavLink href="/about">About</NavLink>
+              </Nav>
+              <div className="d-flex align-items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={isDark ? 'outline-light' : 'outline-dark'}
+                  onClick={toggleTheme}
+                >
+                  {isDark ? '☀️ Light' : '🌙 Dark'}
+                </Button>
+              </div>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
         </Container>
       </Navbar>
-      {/* spacer for fixed-top navbar */}
-      <div style={{ height: 64 }} />
+      <div style={{ height: 72 }} />
     </>
   );
 }
