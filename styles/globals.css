@@ -173,3 +173,52 @@ img.img-fluid { border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
 
 /* Spacing helper */
 .spacer-16 { height: 16px; }
+/* === Back button (top-left in PageHeader) === */
+.back-button-theme {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 6px 12px;
+  transition: transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+  background: transparent;
+  border: 1px solid;
+}
+
+/* Light theme: use primary outline */
+:root[data-bs-theme='light'] .back-button-theme {
+  color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+:root[data-bs-theme='light'] .back-button-theme:hover {
+  background: color-mix(in srgb, var(--bs-primary) 10%, transparent);
+}
+
+/* Dark theme: light outline for contrast */
+:root[data-bs-theme='dark'] .back-button-theme {
+  color: #fff;
+  border-color: rgba(255,255,255,.55);
+}
+:root[data-bs-theme='dark'] .back-button-theme:hover {
+  background: rgba(255,255,255,.1);
+}
+
+/* === Scroll animations for navbar + headers === */
+.navbar-glass {
+  transition: box-shadow .25s ease, backdrop-filter .25s ease, transform .2s ease;
+}
+.pageheader-glass.pageheader-animated {
+  transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease, backdrop-filter .25s ease;
+}
+
+body.scrolled .navbar-glass {
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.scrolled .pageheader-glass.pageheader-animated {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.12);
+}

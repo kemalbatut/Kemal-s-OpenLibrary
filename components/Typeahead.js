@@ -2,15 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ListGroup, Spinner } from 'react-bootstrap';
 
-/**
- * Minimal typeahead dropdown.
- * Props:
- *  - query: string
- *  - fetcher: (q) => Promise<string[]>
- *  - onPick: (value) => void
- *  - visibleMin: number (default 2)
- *  - limit: number (default 3)
- */
 export default function Typeahead({ query, fetcher, onPick, visibleMin = 2, limit = 3 }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
@@ -42,9 +33,10 @@ export default function Typeahead({ query, fetcher, onPick, visibleMin = 2, limi
     return () => { alive = false; };
   }, [query, fetcher, visibleMin, limit]);
 
-  // Close on outside click
   useEffect(() => {
-    function onDoc(e) { if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false); }
+    function onDoc(e) {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
+    }
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);

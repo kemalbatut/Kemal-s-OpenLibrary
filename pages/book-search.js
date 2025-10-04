@@ -33,7 +33,7 @@ export default function BookSearch() {
     const res = await fetch(url);
     if (!res.ok) throw new Error('Edition lookup failed');
     const data = await res.json();
-    const workKey = Array.isArray(data?.works) && data.works[0]?.key; // "/works/OLxxxW"
+    const workKey = Array.isArray(data?.works) && data.works[0]?.key;
     const workId = workKey?.split('/').pop();
     if (!workId) throw new Error('No parent work for edition');
     return workId;
@@ -57,7 +57,7 @@ export default function BookSearch() {
       const res = await fetch(url);
       if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
-      const key = data?.docs?.[0]?.key; // "/works/OLxxxxW" or sometimes "/books/..."
+      const key = data?.docs?.[0]?.key;
       const workId = key?.includes('/works/') ? key.split('/').pop() : null;
       if (!workId) throw new Error('No matching work');
       router.push(`/works/${workId}`);
@@ -71,7 +71,13 @@ export default function BookSearch() {
   return (
     <>
       <SeoHead title="Book Search" description="Find books by ID, URL, or title." />
-      <PageHeader as="h1" text="Book Search" sub="Paste a work/edition URL/ID or type a title." />
+      <PageHeader
+        as="h1"
+        text="Book Search"
+        sub="Paste a work/edition URL/ID or type a title."
+        showBack
+        backHref="/"
+      />
 
       <Card className="card-glass">
         <Card.Body>
