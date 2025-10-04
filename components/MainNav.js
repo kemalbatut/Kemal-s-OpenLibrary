@@ -33,7 +33,7 @@ export default function MainNav() {
     <>
       <Navbar bg={isDark ? 'dark' : 'light'} variant={isDark ? 'dark' : 'light'} expand="md" className="fixed-top shadow-sm">
         <Container>
-          <Navbar.Brand>Kemal's OpenLibrary</Navbar.Brand>
+          <Navbar.Brand>{`Kemal's OpenLibrary`}</Navbar.Brand>
           <Navbar.Toggle aria-controls="main-navbar" />
           <Navbar.Collapse id="main-navbar">
             <Nav className="me-auto">

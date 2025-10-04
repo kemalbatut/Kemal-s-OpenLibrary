@@ -25,9 +25,9 @@ export default function Browse() {
   const [sortDir, setSortDir] = useState('desc'); // 'asc' or 'desc'
   const router = useRouter();
 
-  const { data, error } = useSWR(
-    `https://openlibrary.org/search.json?author=${encodeURIComponent(author)}&page=${page}&limit=10`
-  );
+const { data /* , error */ } = useSWR(
+  `https://openlibrary.org/search.json?author=${encodeURIComponent(author)}&page=${page}&limit=10`
+);
 
   useEffect(() => {
     if (data) setPageData(data);
