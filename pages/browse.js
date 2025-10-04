@@ -1,71 +1,64 @@
 /*********************************************************************************
-* WEB422 – Assignment 1
-*
-* I declare that this assignment is my own work in accordance with Seneca's
-* Academic Integrity Policy:
-*
-* https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
-*
-* Name: Kemal Batu Turgut Student ID: 122277239 Date: Last Updated 3/10/25
-*
-********************************************************************************/
+*  Browse — Random Subject Photo Grid with Filter/Sort, Pagination, Lazy Images
+*********************************************************************************/
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import {Alert,Badge,Button,Card,Col,Form,Row,Spinner,} from 'react-bootstrap';
+import {
+  Alert, Badge, Button, Card, Col, Form, Row, Spinner,
+} from 'react-bootstrap';
 import PageHeader from '../components/PageHeader';
 import SeoHead from '../components/SeoHead';
 
 const SUBJECTS = [
   'fantasy', 'science_fiction', 'mystery', 'romance', 'history', 'biography',
   'children', 'young_adult', 'horror', 'poetry', 'art', 'travel', 'music',
-  'humor', 'business', 'technology', 'computers', 'psychology', 'philosophy'
+  'humor', 'business', 'technology', 'computers', 'psychology', 'philosophy',
 ];
 
-// Simple fetcher for SWR
 const fetcher = (url) => fetch(url).then((r) => {
   if (!r.ok) throw new Error(`Failed: ${r.status}`);
   return r.json();
 });
 
-// Build cover URL with fallback
 const cover = (coverId, size = 'M') =>
   coverId
     ? `https://covers.openlibrary.org/b/id/${coverId}-${size}.jpg`
     : 'https://placehold.co/300x450?text=No+Cover';
 
+const PAGE_SIZE = 24;
+
 export default function Browse() {
   const router = useRouter();
-
-  // pick a subject; store in state so it persists until shuffle
   const [subject, setSubject] = useState(null);
   const [search, setSearch] = useState('');
   const [sortField, setSortField] = useState('year'); // 'year' | 'title'
   const [sortDir, setSortDir] = useState('desc');     // 'asc' | 'desc'
+  const [page, setPage] = useState(1);
 
   // choose subject on first load
   useEffect(() => {
-    const pick = SUBJECTS[Math.floor(Math.random() * SUBJECTS.length)];
-    setSubject(pick);
+    setSubject(SUBJECTS[Math.floor(Math.random() * SUBJECTS.length)]);
   }, []);
 
-  // fetch works for the selected subject
-  const { data, error, isLoading, mutate } = useSWR(
-    subject ? `https://openlibrary.org/subjects/${encodeURIComponent(subject)}.json?limit=60` : null,
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data, error, isLoading } = useSWR(
+    subject ? `https://openlibrary.org/subjects/${encodeURIComponent(subject)}.json?limit=${PAGE_SIZE}&offset=${offset}` : null,
     fetcher
   );
 
-  // Works array (subject endpoint shape)
   const works = Array.isArray(data?.works) ? data.works : [];
 
-  // filter by title
+  // Reset page on subject or filter change
+  useEffect(() => { setPage(1); }, [subject]);
+  useEffect(() => { setPage(1); }, [search]);
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return works;
     return works.filter((w) => (w?.title || '').toLowerCase().includes(q));
   }, [works, search]);
 
-  // sort by title or first_publish_year (desc default)
   const sorted = useMemo(() => {
     const arr = [...filtered];
     const factor = sortDir === 'asc' ? 1 : -1;
@@ -77,32 +70,31 @@ export default function Browse() {
         if (ya === null) return 1;
         if (yb === null) return -1;
         return (ya - yb) * factor;
-      } else {
-        const ta = (a?.title || '').toLowerCase();
-        const tb = (b?.title || '').toLowerCase();
-        return ta.localeCompare(tb) * factor;
       }
+      const ta = (a?.title || '').toLowerCase();
+      const tb = (b?.title || '').toLowerCase();
+      return ta.localeCompare(tb) * factor;
     });
   }, [filtered, sortField, sortDir]);
 
   const shuffle = () => {
-    const pick = SUBJECTS[Math.floor(Math.random() * SUBJECTS.length)];
-    setSubject(pick);
-    // SWR will refetch due to key change; reset UI inputs
+    setSubject(SUBJECTS[Math.floor(Math.random() * SUBJECTS.length)]);
     setSearch('');
     setSortField('year');
     setSortDir('desc');
+    setPage(1);
   };
 
   return (
     <>
       <SeoHead
         title="Browse — Random Books with Covers"
-        description="Discover random books with cover photos from OpenLibrary subjects. Filter, sort, and explore."
+        description="Discover random books with cover photos from OpenLibrary subjects. Filter, sort, shuffle, and paginate."
       />
       <PageHeader
+        as="h1"
         text="Discover Books"
-        sub={subject ? `Showing: ${subject.replaceAll('_', ' ')}` : 'Loading subjects…'}
+        sub={subject ? `Subject: ${subject.replaceAll('_', ' ')}` : 'Loading subjects…'}
       />
 
       {/* Controls */}
@@ -172,11 +164,15 @@ export default function Browse() {
             <Col key={w.key}>
               <Card className="h-100 border-0 shadow-sm card-glass">
                 <Card.Img
-                  variant="top"
+                  as="img"
+                  className="card-img-top img-fluid"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
                   src={img}
                   alt={`${w?.title || 'Book'} cover`}
                   onError={(e) => { e.currentTarget.src = 'https://placehold.co/300x450?text=No+Cover'; }}
-                  className="img-fluid"
                 />
                 <Card.Body className="d-flex flex-column">
                   <div className="fw-semibold mb-1 text-truncate" title={w?.title || 'Untitled'}>
@@ -202,6 +198,25 @@ export default function Browse() {
         })}
       </Row>
 
+      {/* Pagination */}
+      <div className="d-flex justify-content-between align-items-center mt-3">
+        <Button
+          variant="outline-secondary"
+          disabled={page <= 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          ← Prev
+        </Button>
+        <span className="small text-muted">Page {page}</span>
+        <Button
+          variant="outline-secondary"
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Next →
+        </Button>
+      </div>
+
+      {/* Sticky back home */}
       <div className="position-fixed bottom-0 start-50 translate-middle-x mb-3">
         <Button variant="secondary" onClick={() => router.push('/')}>
           ← Back Home

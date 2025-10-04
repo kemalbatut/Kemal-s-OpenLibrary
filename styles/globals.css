@@ -26,12 +26,29 @@ body {
   --ring: #0dcaf0;
 }
 
+/* Background (non-repeating + fixed) */
 body {
   background:
     radial-gradient(1000px 600px at -10% -10%, rgba(13, 110, 253, 0.08), transparent),
     radial-gradient(900px 500px at 110% -10%, rgba(102, 16, 242, 0.08), transparent),
     var(--app-surface);
   color: var(--app-text);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+/* Safety layer to prevent tiling on some devices */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(1000px 600px at -10% -10%, rgba(13,110,253,.08), transparent),
+    radial-gradient(900px 500px at 110% -10%, rgba(102,16,242,.08), transparent),
+    var(--app-surface);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 /* Max width container for nicer reading width */
@@ -57,12 +74,29 @@ body {
 }
 .hero-title,
 .hero-subtitle { margin: 0; }
-/* Light mode: dark text for readability */
 :root[data-bs-theme='light'] .hero-title { color: #111; }
 :root[data-bs-theme='light'] .hero-subtitle { color: #333; }
-/* Dark mode: light text */
 :root[data-bs-theme='dark'] .hero-title,
 :root[data-bs-theme='dark'] .hero-subtitle { color: #fff; }
+
+/* Theme-aware hero buttons without changing JSX */
+:root[data-bs-theme='light'] .hero .btn-light {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+:root[data-bs-theme='light'] .hero .btn-outline-light {
+  color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  background-color: transparent !important;
+}
+:root[data-bs-theme='light'] .hero .btn-light:hover { filter: brightness(0.95); }
+:root[data-bs-theme='light'] .hero .btn-outline-light:hover {
+  background-color: color-mix(in srgb, var(--bs-primary) 10%, transparent) !important;
+}
+:root[data-bs-theme='dark'] .hero .btn-outline-light:hover {
+  background-color: rgba(255,255,255,.1) !important;
+}
 
 /* Modern nav link underline with animation (hover + active) */
 .nav-link-modern {
@@ -84,9 +118,7 @@ body {
   transition: transform 220ms ease;
 }
 .nav-link-modern:hover::after,
-.nav-link-modern.active::after {
-  transform: scaleX(1);
-}
+.nav-link-modern.active::after { transform: scaleX(1); }
 .nav-link-modern:not(.active):hover::after { transform-origin: left; }
 .nav-link-modern:not(.active)::after { transform-origin: right; }
 
@@ -103,10 +135,7 @@ body {
 :root[data-bs-theme='dark'] .table-modern tbody tr.row-click:hover { background-color: rgba(13,110,253,.15); }
 
 /* Empty state */
-.empty-state {
-  text-align: center;
-  color: var(--bs-secondary-color);
-}
+.empty-state { text-align: center; color: var(--bs-secondary-color); }
 .empty-state i { font-size: 2rem; display: block; }
 
 /* Inputs & focus ring */
@@ -123,41 +152,24 @@ body {
 /* Images */
 img.img-fluid { border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
 
-/* Footer */
-.app-footer { background: rgba(0,0,0,.04); color: var(--bs-secondary-color); padding: 16px 0; margin-top: 32px; }
-:root[data-bs-theme='dark'] .app-footer { background: rgba(255,255,255,.04); }
-
-/* Spacing helper */
-.spacer-16 { height: 16px; }
-/* === Hero buttons: theme-aware variants without changing JSX === */
-/* Light mode: make "btn-light" act like primary inside the hero */
-:root[data-bs-theme='light'] .hero .btn-light {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
-  color: #fff !important;
-}
-:root[data-bs-theme='light'] .hero .btn-light:hover {
-  filter: brightness(0.95);
-}
-
-/* Light mode: make "btn-outline-light" act like outline-primary inside the hero */
-:root[data-bs-theme='light'] .hero .btn-outline-light {
-  color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
-  background-color: transparent !important;
-}
-:root[data-bs-theme='light'] .hero .btn-outline-light:hover {
-  background-color: color-mix(in srgb, var(--bs-primary) 10%, transparent) !important;
-}
-
-/* Dark mode: keep the original light / outline-light look, just ensure contrast */
-:root[data-bs-theme='dark'] .hero .btn-outline-light:hover {
-  background-color: rgba(255,255,255,.1) !important;
-}
-/* Keep card covers nice and consistent */
+/* Browse card image consistency + hover pop */
 .card .card-img-top {
   object-fit: cover;
   height: 240px;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
 }
+.card-glass { transition: transform .18s ease, box-shadow .18s ease; }
+.card-glass:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(0,0,0,.16) !important;
+}
+.card-glass .card-img-top { transition: transform .25s ease; }
+.card-glass:hover .card-img-top { transform: scale(1.04); }
+
+/* Footer */
+.app-footer { background: rgba(0,0,0,.04); color: var(--bs-secondary-color); padding: 16px 0; margin-top: 32px; text-align: center; }
+:root[data-bs-theme='dark'] .app-footer { background: rgba(255,255,255,.04); }
+
+/* Spacing helper */
+.spacer-16 { height: 16px; }
