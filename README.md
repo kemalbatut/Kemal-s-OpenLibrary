@@ -15,6 +15,12 @@ It integrates with the [OpenLibrary API](https://openlibrary.org/developers/api)
 - 🔙 Sticky back navigation buttons for smooth exploration  
 - ⚡ Deployed with SEO metadata, favicon, and Twitter/Open Graph preview cards  
 
+---
+
+## 🚀 Live Demo
+👉 [Live site on Vercel](https://kemals-openlibrary.vercel.app)
+
+---
 
 ## 🛠 Tech Stack
 - [Next.js](https://nextjs.org/)  
