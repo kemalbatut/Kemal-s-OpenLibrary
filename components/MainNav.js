@@ -38,19 +38,20 @@ export default function MainNav({ theme = 'light', onToggleTheme = () => {} }) {
 
         <Navbar.Toggle aria-controls="main-nav" />
         <Navbar.Collapse id="main-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} href="/book-search" className="nav-link-modern">Book Search</Nav.Link>
-            <Nav.Link as={Link} href="/author-search" className="nav-link-modern">Author Search</Nav.Link>
-            <Nav.Link as={Link} href="/browse" className="nav-link-modern">Browse</Nav.Link>
-            <Nav.Link as={Link} href="/about" className="nav-link-modern">About</Nav.Link>
-          </Nav>
+  <Nav className="me-auto">
+    <Nav.Link as={Link} href="/browse" className="nav-link-modern">Browse</Nav.Link>
+    <Nav.Link as={Link} href="/book-search" className="nav-link-modern">Book Search</Nav.Link>
+    <Nav.Link as={Link} href="/author-search" className="nav-link-modern">Author Search</Nav.Link>
+    <Nav.Link as={Link} href="/about" className="nav-link-modern">About</Nav.Link>
+  </Nav>
 
-          <div className="d-flex">
-            <Button size="sm" variant="outline-secondary" onClick={onToggleTheme}>
-              {theme === 'dark' ? 'Light' : 'Dark'} mode
-            </Button>
-          </div>
-        </Navbar.Collapse>
+  <div className="d-flex">
+    <Button size="sm" variant="outline-secondary" onClick={onToggleTheme}>
+      {theme === 'dark' ? 'Light' : 'Dark'} mode
+    </Button>
+  </div>
+</Navbar.Collapse>
+
       </Container>
     </Navbar>
   );
