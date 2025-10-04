@@ -2,25 +2,26 @@
 import Head from 'next/head';
 
 export default function SeoHead({
-  title = 'OpenLibrary Explorer',
-  description = 'Search books by URL/ID/title, browse authors, and explore details using the OpenLibrary API.',
+  title = "OpenLibrary Explorer",
+  description = "Search books by URL/ID/title, browse authors, and explore details using the OpenLibrary API.",
   url,
-  image = '/og-default.png',
-  themeColor = '#0d6efd',
+  image = "/og-default.png",
+  themeColor = "#0d6efd",
 }) {
-  const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const fullUrl = url || site;
-  const fullImage = image.startsWith('http') ? image : `${site}${image}`;
+  const fullImage = image.startsWith("http") ? image : `${site}${image}`;
+
+  const v = "v=5"; // bump this when you replace the icon
 
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
 
-      {/* Favicons */}
-      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      <link rel="alternate icon" href="/favicon.ico" />
+      {/* Use ICO only */}
+      <link rel="icon" href={`/favicon.ico?${v}`} />
+
       <meta name="theme-color" content={themeColor} />
 
       {/* Open Graph */}
