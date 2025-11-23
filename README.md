@@ -33,8 +33,8 @@ A modern **Next.js** application for exploring the OpenLibrary API with **photo-
 
 ## Key Features
 
-- 🔎 **Book Search:** paste a Work/Edition URL/ID (`/works/OL…W` or `/books/OL…M`) or type a title—resolves to the correct Work details.
-- 👤 **Author Search:** paste an Author URL/ID (`/authors/OL…A`) or type a name—see profile and works with sorting/pagination.
+- 🔎 **Book Search:** paste a Work/Edition URL/ID (`/works/OL…W` or `/books/OL…M`) or type a title resolves to the correct Work details.
+- 👤 **Author Search:** paste an Author URL/ID (`/authors/OL…A`) or type a name see profile and works with sorting/pagination.
 - 🖼 **Browse (Photo Grid):** random subject covers (fantasy, mystery, etc.) with **Shuffle**, **filter**, and **sort** (Year/Title, Asc/Desc).
 - 🌓 **Dark/Light Mode:** remembers preference and respects system settings.
 - 🧭 **Sticky Back Buttons:** consistent, always-visible CTAs on long pages.
@@ -142,7 +142,7 @@ npm run start     # Serve the production build locally
 
 ## Performance, Accessibility & SEO
 
-- **Performance** — SWR caching; compact global CSS; minimal runtime JS beyond UI needs.
-- **Accessibility** — semantic headings, readable focus rings, keyboard-friendly nav, `alt` text, adequate contrast in both themes.
+- **Performance** - SWR caching; compact global CSS; minimal runtime JS beyond UI needs.
+- **Accessibility** - semantic headings, readable focus rings, keyboard-friendly nav, `alt` text, adequate contrast in both themes.
 - **SEO** — centralized head: title, meta description, Open Graph (image/url), Twitter large card, theme color, cache-busted favicons.
 
